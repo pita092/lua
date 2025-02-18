@@ -20,6 +20,32 @@
 #include "lauxlib.h"
 #include "lualib.h"
 #include "llimits.h"
+#include "lua.h"
+#include "lauxlib.h"
+#include "lualib.h"
+
+int echo(lua_State *L) {
+    int n = lua_gettop(L);  // Get the number of arguments
+    for (int i = 1; i <= n; i++) {
+        // Check if argument is a string, otherwise convert it to string
+        if (lua_isstring(L, i)) {
+            printf("%s", lua_tostring(L, i));
+        } else if (lua_isnumber(L, i)) {
+            printf("%g", lua_tonumber(L, i));
+        } else {
+            luaL_error(L, "echo function only accepts strings or numbers");
+        }
+    }
+    printf("\n");  // New line after the output
+    return 0;  // Return nothing
+}
+
+// Register the echo function in the Lua standard library
+int luaopen_echo(lua_State *L) {
+    lua_register(L, "echo", echo);
+    return 0;
+}
+
 
 
 static int luaB_print (lua_State *L) {
